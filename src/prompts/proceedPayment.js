@@ -1,6 +1,6 @@
 import inquirer from 'inquirer'
 
-export const proceedReport = async () => {
+export const proceedPayment = async () => {
   const { proceed } = await inquirer.prompt([
     {
       type: 'confirm',
