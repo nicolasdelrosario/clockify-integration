@@ -38,7 +38,7 @@ export const registerMonthlyPayment = async data => {
 }
 
 export const registerWeeklyPayment = async data => {
-  const startDate = Temporal.PlainDate.from(data.start_date)
+  const startDate = Temporal.PlainDate.from(data.start_date.split('T')[0])
   const daysDifference = startDate.until(today).total({ unit: 'days' })
 
   const { error } = await supabase
