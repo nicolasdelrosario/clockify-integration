@@ -18,7 +18,8 @@
     "@supabase/supabase-js": "^2.47.10",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
-    "inquirer": "^12.3.0"
+    "inquirer": "^12.3.0",
+    "resend": "^4.0.1"
   },
   "devDependencies": {
     "eslint": "^8.45.0",
