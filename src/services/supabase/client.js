@@ -1,9 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
 import { env } from '../../config/env.js'
 
-const { supabaseUrl, supabaseKey } = env
+const { supabaseUrl, supabaseApiKey } = env
 
-if (!supabaseUrl || !supabaseKey)
+if (!supabaseUrl || !supabaseApiKey)
   throw new Error('Missing Supabase credentials')
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+export const supabase = createClient(supabaseUrl, supabaseApiKey)
