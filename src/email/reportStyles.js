@@ -1,7 +1,6 @@
 export const reportStyles = `
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
     color: #020f15;
     margin: 0;
     padding: 20px;
