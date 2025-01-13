@@ -8,4 +8,6 @@ export const env = {
   supabaseUrl: process.env.SUPABASE_URL,
   supabaseApiKey: process.env.SUPABASE_KEY,
   resendApiKey: process.env.RESEND_API_KEY,
+  letyMindEmail: process.env.LETYMIND_EMAIL,
+  emailRecipients: process.env.EMAIL_RECIPIENTS,
 }
