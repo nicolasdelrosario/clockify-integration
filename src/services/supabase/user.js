@@ -1,5 +1,12 @@
 import { supabase } from './client.js'
 
+export const getUsers = async () => {
+  const { data, error } = await supabase.from('clockify_user').select('*')
+
+  if (!data || error) return console.error('hubo un error: ', error)
+  return data
+}
+
 export const getUser = async id => {
   const { data, error } = await supabase
     .from('clockify_user')
@@ -7,9 +14,7 @@ export const getUser = async id => {
     .eq('id', id)
     .single()
 
-  if (!data) return
-  if (error) return
-
+  if (!data || error) return console.error('hubo un error: ', error)
   return data
 }
 
@@ -24,7 +29,6 @@ export const createUser = async data => {
     })
     .single()
 
-  if (error) throw new Error(error.message)
-
+  if (!data || error) return console.error('hubo un error: ', error)
   return data
 }
