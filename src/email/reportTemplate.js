@@ -1,6 +1,6 @@
 import { reportStyles } from './reportStyles.js'
 
-export const reportTemplate = report => {
+export const reportTemplate = (title, subtitle, report) => {
   const rows = report
     .map(
       entry => `
@@ -24,8 +24,8 @@ export const reportTemplate = report => {
         </style>
       </head>
       <body>
-        <h1 class="title">Reporte de Pagos</h1>
-        <p class="subtitle">Detalle de los pagos a realizar:</p>
+        <h1 class="title">${title}</h1>
+        <p class="subtitle">${subtitle}</p>
         <table class="table">
           <thead class="table__head">
             <tr class="table__row">
