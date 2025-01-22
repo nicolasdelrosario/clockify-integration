@@ -7,8 +7,6 @@ export const getPaymentPerHour = async id => {
     .eq('id', id)
     .single()
 
-  if (!data) throw new Error('user level not found')
-  if (error) throw new Error(error.message)
-
+  if (!data || error) return console.error('hubo un error: ', error)
   return data
 }
