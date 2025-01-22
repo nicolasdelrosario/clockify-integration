@@ -11,7 +11,7 @@ export const calculateTotalHours = timeEntries => {
     return sum + hours + minutes / 60
   }, 0)
 
-  // Redondeo 0.5 o 1
+  // Redondeo de 0, 0.5 o 1
   const rounded = Math.round(total * 2) / 2
 
   return rounded < 0 ? 0 : rounded
