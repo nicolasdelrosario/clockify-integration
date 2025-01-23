@@ -15,16 +15,16 @@
   "license": "ISC",
   "dependencies": {
     "@js-temporal/polyfill": "^0.4.4",
-    "@supabase/supabase-js": "^2.47.10",
+    "@supabase/supabase-js": "^2.48.0",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
-    "inquirer": "^12.3.0",
-    "resend": "^4.0.1"
+    "inquirer": "^12.3.2",
+    "resend": "^4.1.1"
   },
   "devDependencies": {
-    "eslint": "^8.45.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "prettier": "^3.0.0"
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^8.10.0",
+    "eslint-plugin-prettier": "^5.2.3",
+    "prettier": "^3.4.2"
   }
 }
