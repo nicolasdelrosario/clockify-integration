@@ -2,9 +2,15 @@ import { Temporal } from '@js-temporal/polyfill'
 
 import { getDailyReports, summarizeReport } from './services/supabase/report.js'
 import { getEligibleWorkspaces } from './services/supabase/workspace.js'
-import { registerMonthlyPayment } from './services/supabase/payment.js'
+import {
+  getPaymentPerHourWorkspace,
+  registerMonthlyPayment,
+} from './services/supabase/payment.js'
 
-import { reportTemplate } from './email/reportTemplate.js'
+import { calculateTotalPayment } from './utils/calculateTotalPayment.js'
+
+import { reportComercialTemplate } from './email/reportComercialTemplate.js'
+import { reportTemplateMonthly } from './email/reportTemplateMonthly.js'
 import { sendEmail } from './email/sendEmail.js'
 
 const plaintDate = date => Temporal.PlainDate.from(date)
@@ -23,7 +29,13 @@ export async function generateMonthlyReport() {
   if (!workspaces.length) return console.log('No hay Workspaces elegibles.')
 
   for (const workspace of workspaces) {
-    const { name, subscription_start_date, subscription_end_date } = workspace
+    const {
+      name,
+      subscription_start_date,
+      subscription_end_date,
+      total_hours,
+      level_id,
+    } = workspace
 
     const subscriptionStartDate = plaintDate(subscription_start_date)
     const subscriptionEndDate = plaintDate(subscription_end_date)
@@ -33,6 +45,7 @@ export async function generateMonthlyReport() {
       const reportEndDate = plaintDate(report.end_date)
 
       return (
+        total_hours > 0 &&
         compare(reportStartDate, subscriptionStartDate) >= 0 &&
         compare(reportEndDate, subscriptionEndDate) <= 0 &&
         report.company === name
@@ -45,17 +58,35 @@ export async function generateMonthlyReport() {
         end_date: formatToISO(subscription_end_date),
       })
 
-      await registerMonthlyPayment(summarizedReport)
-      reports.push(...summarizedReport)
+      const totalSummarizedHours = summarizedReport.reduce(
+        (sum, report) => sum + (report.total_hours || 0),
+        0
+      )
+
+      let remainingHours = 0
+      let remainingPayment = 0
+
+      if (totalSummarizedHours < total_hours) {
+        const { cost_per_hour } = await getPaymentPerHourWorkspace(level_id)
+        remainingHours = total_hours - totalSummarizedHours
+        remainingPayment = calculateTotalPayment(remainingHours, cost_per_hour)
+      }
+
+      const reportsWithRemaining = summarizedReport.map(report => ({
+        ...report,
+        remaining_hours: remainingHours,
+        letycash: remainingPayment,
+      }))
+
+      await registerMonthlyPayment(reportsWithRemaining)
+      reports.push(...reportsWithRemaining)
     }
   }
 
-  const html = reportTemplate(
-    'Reporte Mensual',
-    'Detalle de los pagos a realizar:',
-    reports
-  )
+  const html = reportTemplateMonthly(reports)
+  const htmlComercial = reportComercialTemplate(reports)
   await sendEmail(html)
+  await sendEmail(htmlComercial)
 
   console.group('Reporte Mensual:')
   console.table(reports)
