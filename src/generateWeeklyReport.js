@@ -6,7 +6,7 @@ import { registerWeeklyPayment } from './services/supabase/payment.js'
 
 import { getStartAndEndOfLastWeek } from './utils/getStartAndEndOfLastWeek.js'
 
-import { reportTemplate } from './email/reportTemplate.js'
+import { reportTemplateWeekly } from './email/reportTemplateWeekly.js'
 import { sendEmail } from './email/sendEmail.js'
 
 const plaintDate = date => Temporal.PlainDate.from(date.split('T')[0])
@@ -46,7 +46,8 @@ export async function generateWeeklyReport() {
     }
   }
 
-  const html = reportTemplate('Reporte Semanal', '', reports)
+  if (!reports.length) return console.log('No hay ningún reporte semanal.')
+  const html = reportTemplateWeekly(reports)
   await sendEmail(html)
 
   console.group('Reporte Semanal:')
