@@ -37,8 +37,8 @@ export async function generateDailyReport() {
       )
 
       const totalHours = calculateTotalHours(timeEntries)
-      const paymentPerHour = await getPaymentPerHour(userRecord.level_id)
-      const total = calculateTotalPayment(totalHours, paymentPerHour)
+      const { cost_per_hour } = await getPaymentPerHour(userRecord.level_id)
+      const total = calculateTotalPayment(totalHours, cost_per_hour)
 
       if (total > 0 && totalHours > 0) {
         const data = {
