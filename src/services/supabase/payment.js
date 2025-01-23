@@ -8,7 +8,18 @@ export const getPaymentPerHour = async id => {
     .single()
 
   if (!data || error) return console.error('hubo un error: ', error)
-  return data.cost_per_hour
+  return data
+}
+
+export const getPaymentPerHourWorkspace = async id => {
+  const { data, error } = await supabase
+    .from('clockify_workspace_level')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (!data || error) return console.error('hubo un error: ', error)
+  return data
 }
 
 export const registerDailyPayment = async data => {
