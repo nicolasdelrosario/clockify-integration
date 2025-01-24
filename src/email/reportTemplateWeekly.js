@@ -23,7 +23,7 @@ export const reportTemplateWeekly = report => {
         </style>
       </head>
       <body>
-        <h1 class="title">Reporte Semanal</h1>
+        <h1 class="title">Seguimiento semanal de las horas registradas de los talentos</h1>
         <p class="subtitle">Información de las horas trabajadas:</p>
         <table class="table">
           <thead class="table__head">
