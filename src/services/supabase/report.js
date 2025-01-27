@@ -14,13 +14,14 @@ export const summarizeReport = async (reports, date) => {
   const reportMap = new Map()
 
   reports.forEach(({ email, talent, company, total_hours, total_payment }) => {
-    const key = `${talent}-${company}`
+    // Normalize the key by trimming whitespace
+    const key = `${talent.trim()}-${company.trim()}`
 
     if (!reportMap.has(key))
       reportMap.set(key, {
         email,
-        talent,
-        company,
+        talent: talent.trim(),
+        company: company.trim(),
         total_hours: 0,
         total_payment: 0,
         start_date: date.start_date || null,

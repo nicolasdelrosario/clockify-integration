@@ -8,6 +8,7 @@ import {
 } from './services/supabase/payment.js'
 
 import { calculateTotalPayment } from './utils/calculateTotalPayment.js'
+import { sendWhatsAppMessage } from './services/whatsapp/client.js'
 
 import { reportComercialTemplate } from './email/reportComercialTemplate.js'
 import { reportTemplateMonthly } from './email/reportTemplateMonthly.js'
@@ -80,7 +81,8 @@ export async function generateMonthlyReport() {
       }))
 
       await registerMonthlyPayment(reportsWithRemaining)
-      reports.push(...reportsWithRemaining)
+
+      reports.push(...summarizedReport)
     }
   }
 
@@ -89,14 +91,31 @@ export async function generateMonthlyReport() {
   await sendEmail(
     htmlData,
     ['pamela@letymind.com', 'andy@letymind.com', 'edhu@letymind.com'],
-    'Reporte de subscripción de talento'
+    'Reporte de suscripción de talento'
   )
 
   await sendEmail(
     htmlComercial,
     ['andy@letymind.com', 'comercial@letymind.com'],
-    'Reporte de subscripción para comercial'
+    'Reporte de suscripción para comercial'
   )
+
+  const whatsappMessage =
+    `📊 *Reporte Mensual*\n\n` +
+    `📅 Periodo: ${reports[0]?.start_date.split('T')[0]} - ${reports[0]?.end_date.split('T')[0]}\n` +
+    `*Detalles por Talento:*\n` +
+    reports
+      .map(
+        report =>
+          `• ${report.talent} (${report.company}):\n` +
+          `  - Horas solicitadas: ${report.subscription_hours}hrs\n` +
+          `  - Horas registradas: ${report.total_hours}hrs\n` +
+          `  - Horas restantes: ${report.remaining_hours}hrs\n` +
+          `  - Pago al talento: S/${report.total_payment.toFixed(2)}`
+      )
+      .join('\n\n')
+
+  await sendWhatsAppMessage('991161399', whatsappMessage)
 
   console.group('Reporte Mensual:')
   console.table(reports)

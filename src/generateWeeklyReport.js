@@ -5,6 +5,7 @@ import { getWorkspaces } from './services/supabase/workspace.js'
 import { registerWeeklyPayment } from './services/supabase/payment.js'
 
 import { getStartAndEndOfLastWeek } from './utils/getStartAndEndOfLastWeek.js'
+import { sendWhatsAppMessage } from './services/whatsapp/client.js'
 
 import { reportTemplateWeekly } from './email/reportTemplateWeekly.js'
 import { sendEmail } from './email/sendEmail.js'
@@ -53,6 +54,19 @@ export async function generateWeeklyReport() {
     ['pamela@letymind.com'],
     'Seguimiento semanal de las horas registradas de los talentos'
   )
+
+  const whatsappMessage =
+    `📊 *Reporte Semanal*\n\n` +
+    `📅 Periodo: ${startDate.split('T')[0]} - ${endDate.split('T')[0]}\n\n` +
+    `*Detalles por Talento:*\n` +
+    reports
+      .map(
+        report =>
+          `• ${report.talent} (${report.company}): ${report.total_hours}hrs`
+      )
+      .join('\n')
+
+  await sendWhatsAppMessage('991161399', whatsappMessage)
 
   console.group('Reporte Semanal:')
   console.table(reports)
