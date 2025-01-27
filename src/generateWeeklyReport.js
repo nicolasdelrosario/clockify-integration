@@ -47,8 +47,12 @@ export async function generateWeeklyReport() {
   }
 
   if (!reports.length) return console.log('No hay ningún reporte semanal.')
-  const html = reportTemplateWeekly(reports)
-  await sendEmail(html)
+  const htmlData = reportTemplateWeekly(reports)
+  await sendEmail(
+    htmlData,
+    ['pamela@letymind.com'],
+    'Seguimiento semanal de las horas registradas de los talentos'
+  )
 
   console.group('Reporte Semanal:')
   console.table(reports)

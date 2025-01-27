@@ -74,6 +74,7 @@ export async function generateMonthlyReport() {
 
       const reportsWithRemaining = summarizedReport.map(report => ({
         ...report,
+        subscription_hours: total_hours,
         remaining_hours: remainingHours,
         letycash: remainingPayment,
       }))
@@ -83,10 +84,19 @@ export async function generateMonthlyReport() {
     }
   }
 
-  const html = reportTemplateMonthly(reports)
+  const htmlData = reportTemplateMonthly(reports)
   const htmlComercial = reportComercialTemplate(reports)
-  await sendEmail(html)
-  await sendEmail(htmlComercial)
+  await sendEmail(
+    htmlData,
+    ['pamela@letymind.com', 'andy@letymind.com', 'edhu@letymind.com'],
+    'Reporte de subscripción de talento'
+  )
+
+  await sendEmail(
+    htmlComercial,
+    ['andy@letymind.com', 'comercial@letymind.com'],
+    'Reporte de subscripción para comercial'
+  )
 
   console.group('Reporte Mensual:')
   console.table(reports)
