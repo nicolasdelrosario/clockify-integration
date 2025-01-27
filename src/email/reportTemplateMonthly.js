@@ -26,7 +26,7 @@ export const reportTemplateMonthly = report => {
         </style>
       </head>
       <body>
-        <h1 class="title">Reporte de subscripción de talento</h1>
+        <h1 class="title">Reporte de suscripción de talento</h1>
         <p class="subtitle">Detalle de los pagos a realizar:</p>
         <table class="table">
           <thead class="table__head">
