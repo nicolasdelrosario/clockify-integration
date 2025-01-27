@@ -7,7 +7,8 @@ export const reportComercialTemplate = report => {
       <tr class="table__row">
         <td>${entry.company}</td>
         <td>${entry.talent}</td>
-        <td>S/ ${entry.letycash.toFixed(2)}</td>
+        <td>${entry.remaining_hours}</td>
+        <td>S/${entry.letycash.toFixed(2)}</td>
         <td>${entry.start_date}</td>
         <td>${entry.end_date}</td>
       </tr>
@@ -30,6 +31,7 @@ export const reportComercialTemplate = report => {
             <tr class="table__row">
               <th>Empresa</th>
               <th>Talento</th>
+              <th>Horas Restantes</th>
               <th>Letycash</th>
               <th>Fecha Inicio</th>
               <th>Fecha Fin</th>

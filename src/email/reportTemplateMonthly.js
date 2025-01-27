@@ -10,7 +10,7 @@ export const reportTemplateMonthly = report => {
         <td>${entry.subscription_hours}</td>
         <td>${entry.total_hours}</td>
         <td>${entry.remaining_hours}</td>
-        <td>${entry.total_payment.toFixed(2)}</td>
+        <td>S/${entry.total_payment.toFixed(2)}</td>
         <td>${entry.start_date}</td>
         <td>${entry.end_date}</td>
       </tr>
