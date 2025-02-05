@@ -19,6 +19,8 @@ const main = async () => {
   // * Los lunes generamos el reporte semanal de la semana pasada
   const shouldGenerateWeeklyReport = await proceedWeeklyReport()
   if (shouldGenerateWeeklyReport) await generateWeeklyReport()
+
+  return console.log('✅ Reportes generados correctamente')
 }
 
 main()

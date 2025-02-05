@@ -3,7 +3,7 @@ import { supabase } from './client.js'
 export const getUsers = async () => {
   const { data, error } = await supabase.from('clockify_user').select('*')
 
-  if (!data || error) return console.error('hubo un error: ', error)
+  if (!data || error) return console.error('❌ Hubo un error: ', error)
   return data
 }
 
@@ -14,7 +14,7 @@ export const getUser = async id => {
     .eq('id', id)
     .single()
 
-  if (!data || error) return console.error('hubo un error: ', error)
+  if (!data || error) return console.error('❌ Hubo un error: ', error)
   return data
 }
 
@@ -29,6 +29,6 @@ export const createUser = async data => {
     })
     .single()
 
-  if (!data || error) return console.error('hubo un error: ', error)
+  if (!data || error) return console.error('❌ Hubo un error: ', error)
   return data
 }

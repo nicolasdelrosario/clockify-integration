@@ -10,7 +10,7 @@ export async function sendEmail(data, recipients, subject) {
     recipients || emailRecipients.split(',').map(email => email.trim())
 
   if (!finalRecipients || finalRecipients.length === 0)
-    return console.error('No hay destinatarios al que enviar el correo.')
+    return console.error('🫣 No hay destinatario al que enviar el correo.')
 
   const { error } = await resend.emails.send({
     from: letyMindEmail,
@@ -19,5 +19,6 @@ export async function sendEmail(data, recipients, subject) {
     html: data,
   })
 
-  if (!data || error) return console.error('hubo un error: ', error)
+  if (!data || error) return console.error('❌ Hubo un error: ', error)
+  return console.log('✅ El correo fue enviado correctamente')
 }

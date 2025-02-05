@@ -7,6 +7,6 @@ export const getPaymentPerHour = async id => {
     .eq('id', id)
     .single()
 
-  if (!data || error) return console.error('hubo un error: ', error)
+  if (!data || error) return console.error('❌ Hubo un error: ', error)
   return data
 }

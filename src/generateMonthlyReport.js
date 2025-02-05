@@ -10,9 +10,13 @@ import {
 import { calculateTotalPayment } from './utils/calculateTotalPayment.js'
 import { sendWhatsAppMessage } from './services/whatsapp/client.js'
 
-import { reportComercialTemplate } from './email/reportComercialTemplate.js'
-import { reportTemplateMonthly } from './email/reportTemplateMonthly.js'
+import { reportComercialTemplate } from './email/templates/reportComercialTemplate.js'
+import { reportTemplateMonthly } from './email/templates/reportTemplateMonthly.js'
 import { sendEmail } from './email/sendEmail.js'
+
+import { monthlyTemplate } from './whatsapp/templates/monthlyTemplate.js'
+import { userMonthlyTemplate as userMonthlyTemplateEmail } from './email/templates/userMonthlyTemplate.js'
+import { userMonthlyTemplate } from './whatsapp/templates/userMonthlyTemplate.js'
 
 const plaintDate = date => Temporal.PlainDate.from(date)
 const compare = (a, b) => Temporal.PlainDate.compare(a, b)
@@ -27,7 +31,7 @@ export async function generateMonthlyReport() {
   const workspaces = await getEligibleWorkspaces()
   const dailyReports = await getDailyReports()
 
-  if (!workspaces.length) return console.log('No hay Workspaces elegibles.')
+  if (!workspaces.length) return console.log('🙌 No hay workspaces elegibles.')
 
   for (const workspace of workspaces) {
     const {
@@ -80,9 +84,50 @@ export async function generateMonthlyReport() {
         letycash: remainingPayment,
       }))
 
-      await registerMonthlyPayment(reportsWithRemaining)
+      // Mensaje a cada talento
+      for (const report of reportsWithRemaining) {
+        const {
+          email,
+          phone,
+          talent,
+          total_hours,
+          subscription_hours,
+          remaining_hours,
+          total_payment,
+        } = report
 
-      reports.push(...summarizedReport)
+        if (phone) {
+          const userMessage = userMonthlyTemplate(
+            talent,
+            { total_hours, subscription_hours, remaining_hours, total_payment },
+            {
+              start_date: subscription_start_date,
+              end_date: subscription_end_date,
+            }
+          )
+          await sendWhatsAppMessage(phone, userMessage)
+        }
+
+        if (email) {
+          const htmlData = userMonthlyTemplateEmail(
+            talent,
+            { total_hours, subscription_hours, remaining_hours, total_payment },
+            {
+              start_date: subscription_start_date,
+              end_date: subscription_end_date,
+            }
+          )
+
+          await sendEmail(
+            htmlData,
+            [email],
+            `Reporte mensual de horas - ${subscription_start_date.split('T')[0]} - ${subscription_end_date.split('T')[0]}`
+          )
+        }
+      }
+
+      await registerMonthlyPayment(reportsWithRemaining)
+      reports.push(...reportsWithRemaining)
     }
   }
 
@@ -90,34 +135,23 @@ export async function generateMonthlyReport() {
   const htmlComercial = reportComercialTemplate(reports)
   await sendEmail(
     htmlData,
-    ['pamela@letymind.com', 'andy@letymind.com', 'edhu@letymind.com'],
+    ['delrosariolozanonicolas@gmail.com'],
     'Reporte de suscripción de talento'
   )
 
   await sendEmail(
     htmlComercial,
-    ['andy@letymind.com', 'comercial@letymind.com'],
+    ['delrosariolozanonicolas@gmail.com'],
     'Reporte de suscripción para comercial'
   )
 
-  const whatsappMessage =
-    `📊 *Reporte Mensual*\n\n` +
-    `📅 Periodo: ${reports[0]?.start_date.split('T')[0]} - ${reports[0]?.end_date.split('T')[0]}\n` +
-    `*Detalles por Talento:*\n` +
-    reports
-      .map(
-        report =>
-          `• ${report.talent} (${report.company}):\n` +
-          `  - Horas solicitadas: ${report.subscription_hours}hrs\n` +
-          `  - Horas registradas: ${report.total_hours}hrs\n` +
-          `  - Horas restantes: ${report.remaining_hours}hrs\n` +
-          `  - Pago al talento: S/${report.total_payment.toFixed(2)}`
-      )
-      .join('\n\n')
+  //pamela@letymind.com', 'andy@letymind.com', 'edhu@letymind.com
+  //andy@letymind.com', 'comercial@letymind.com
 
-  await sendWhatsAppMessage('991161399', whatsappMessage)
+  const whatsappMessage = monthlyTemplate(reports)
+  await sendWhatsAppMessage('913621524', whatsappMessage)
 
-  console.group('Reporte Mensual:')
+  console.group('✅ Reporte mensual:')
   console.table(reports)
   console.groupEnd()
 }

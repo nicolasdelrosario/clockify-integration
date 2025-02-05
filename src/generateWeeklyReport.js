@@ -5,10 +5,16 @@ import { getWorkspaces } from './services/supabase/workspace.js'
 import { registerWeeklyPayment } from './services/supabase/payment.js'
 
 import { getStartAndEndOfLastWeek } from './utils/getStartAndEndOfLastWeek.js'
-import { sendWhatsAppMessage } from './services/whatsapp/client.js'
 
-import { reportTemplateWeekly } from './email/reportTemplateWeekly.js'
+// Whatsapp
+import { sendWhatsAppMessage } from './services/whatsapp/client.js'
+import { userWeeklyTemplate } from './whatsapp/templates/userWeeklyTemplate.js'
+import { weeklyTemplate } from './whatsapp/templates/weeklyTemplate.js'
+
+// Email
+import { reportTemplateWeekly } from './email/templates/reportTemplateWeekly.js'
 import { sendEmail } from './email/sendEmail.js'
+import { userWeeklyTemplate as userWeeklyTemplateEmail } from './email/templates/userWeeklyTemplate.js'
 
 const plaintDate = date => Temporal.PlainDate.from(date.split('T')[0])
 const compare = (a, b) => Temporal.PlainDate.compare(a, b)
@@ -44,31 +50,49 @@ export async function generateWeeklyReport() {
 
       await registerWeeklyPayment(summarizedReport)
       reports.push(...summarizedReport)
+
+      // Mensaje a cada talento
+      for (const report of summarizedReport) {
+        const { phone, talent, total_hours, email } = report
+        // Send whatsApp message if phone exists
+        if (phone) {
+          const userMessage = userWeeklyTemplate(talent, total_hours, {
+            startDate,
+            endDate,
+          })
+          await sendWhatsAppMessage(phone, userMessage)
+        }
+
+        // Send email if email exists
+        if (email) {
+          const htmlData = userWeeklyTemplateEmail(talent, total_hours, {
+            startDate,
+            endDate,
+          })
+          await sendEmail(
+            htmlData,
+            [email],
+            `Reporte semanal de horas - ${startDate.split('T')[0] + ' - ' + endDate.split('T')[0]}`
+          )
+        }
+      }
     }
   }
 
-  if (!reports.length) return console.log('No hay ningún reporte semanal.')
+  if (!reports.length) return console.log('🫣 No hay ningún reporte semanal.')
+
   const htmlData = reportTemplateWeekly(reports)
   await sendEmail(
     htmlData,
-    ['pamela@letymind.com'],
+    ['delrosariolozanonicolas@gmail.com'],
     'Seguimiento semanal de las horas registradas de los talentos'
   )
+  //pamela@letymind.com
 
-  const whatsappMessage =
-    `📊 *Reporte Semanal*\n\n` +
-    `📅 Periodo: ${startDate.split('T')[0]} - ${endDate.split('T')[0]}\n\n` +
-    `*Detalles por Talento:*\n` +
-    reports
-      .map(
-        report =>
-          `• ${report.talent} (${report.company}): ${report.total_hours}hrs`
-      )
-      .join('\n')
+  const whatsappMessage = weeklyTemplate(reports, { startDate, endDate })
+  await sendWhatsAppMessage('913621524', whatsappMessage)
 
-  await sendWhatsAppMessage('991161399', whatsappMessage)
-
-  console.group('Reporte Semanal:')
+  console.group('✅ Reporte semanal:')
   console.table(reports)
   console.groupEnd()
 }

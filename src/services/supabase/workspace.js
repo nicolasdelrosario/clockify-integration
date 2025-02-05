@@ -6,7 +6,7 @@ const plaintDate = date => Temporal.PlainDate.from(date)
 export const getWorkspaces = async () => {
   const { data, error } = await supabase.from('clockify_workspace').select('*')
 
-  if (!data || error) return console.error('hubo un error: ', error)
+  if (!data || error) return console.error('❌ Hubo un error: ', error)
   return data
 }
 
@@ -17,7 +17,7 @@ export const getWorkspace = async id => {
     .eq('id', id)
     .single()
 
-  if (!data || error) return console.error('hubo un error: ', error)
+  if (!data || error) return console.error('❌ Hubo un error: ', error)
   return data
 }
 
@@ -27,7 +27,7 @@ export const createWorkspace = async data => {
     name: data.name,
   })
 
-  if (!data || error) return console.error('hubo un error: ', error)
+  if (!data || error) return console.error('❌ Hubo un error: ', error)
   return data
 }
 

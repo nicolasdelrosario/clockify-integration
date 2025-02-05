@@ -31,5 +31,5 @@ export async function generateWorkspacesAndUsers() {
     }
   }
 
-  console.log('Workspaces y Usuarios creados correctamente')
+  console.log('✅ Workspaces y usuarios creados correctamente')
 }

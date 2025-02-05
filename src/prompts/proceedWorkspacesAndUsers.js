@@ -5,7 +5,7 @@ export const proceedWorkspacesAndUsers = async () => {
     {
       type: 'confirm',
       name: 'proceed',
-      message: '¿Desea solo generar los workspaces y usuarios?',
+      message: '🙋 ¿Desea SOLO generar los workspaces y usuarios?',
       default: true,
     },
   ])

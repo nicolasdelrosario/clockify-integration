@@ -5,7 +5,7 @@ export const proceedWeeklyReport = async () => {
     {
       type: 'confirm',
       name: 'proceed',
-      message: '¿Desea generar un reporte semanal?',
+      message: '🙋 ¿Desea generar un reporte semanal?',
       default: true,
     },
   ])

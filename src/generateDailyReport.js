@@ -45,6 +45,7 @@ export async function generateDailyReport() {
           email: userRecord.email,
           talent: userRecord.name,
           company: workspaceRecord.name,
+          phone: userRecord.phone,
           total_hours: totalHours,
           total_payment: total,
           start_date: startDate,
@@ -57,7 +58,7 @@ export async function generateDailyReport() {
     }
   }
 
-  console.group('Reporte Diario:')
+  console.group('✅ Reporte diario:')
   console.table(reports)
   console.groupEnd()
 }

@@ -4,6 +4,6 @@ import { env } from '../../config/env.js'
 const { supabaseUrl, supabaseApiKey } = env
 
 if (!supabaseUrl || !supabaseApiKey)
-  throw new Error('Missing Supabase credentials')
+  throw new Error('❌ Faltan las credenciales de supabase')
 
 export const supabase = createClient(supabaseUrl, supabaseApiKey)

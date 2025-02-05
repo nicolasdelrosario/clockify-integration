@@ -20,7 +20,7 @@ const initializeClient = () => {
     })
 
     client.on('ready', () => {
-      console.log('WhatsApp client is ready!')
+      console.log('✅ El cliente de whatsapp está listo')
       isReady = true
       resolve()
     })
@@ -35,8 +35,10 @@ export const sendWhatsAppMessage = async (phone, message) => {
 
     const formattedPhone = `51${phone}@c.us`
     await client.sendMessage(formattedPhone, message)
-    console.log('WhatsApp message sent successfully')
+    console.log('✅ El mensaje de whatsapp fue enviado correctamente')
   } catch (error) {
-    console.error('Error sending WhatsApp message:', error)
+    console.error('❌ Error enviando el mensaje:', error)
   }
 }
+
+// envio talentos: correo y ws
